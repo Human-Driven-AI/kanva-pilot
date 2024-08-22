@@ -1,10 +1,7 @@
-$resourceGroupName = "Kanva-Pilot"
-$location = "norwaywest"
-$subscriptionId = "Your-Subscription-ID"
-
+# This is the only mandatory one
+$subscriptionId = ""
 $location = "norwayeast"
 $resourceGroupName = "Kanva-Pilot"
-$subscriptionId = ""
 
 # Storage account
 $accessTier = "Hot"
