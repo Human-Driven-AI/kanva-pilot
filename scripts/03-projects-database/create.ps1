@@ -21,3 +21,6 @@ az sql db create `
     --min-capacity 0.5 `
     --backup-storage-redundancy Local `
     --compute-model $computeModel
+
+
+Write-Host "Please create a container app for image efbundle:20230823-0417" -ForegroundColor DarkGreen -BackgroundColor White

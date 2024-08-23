@@ -24,10 +24,10 @@ az containerapp create `
     --max-replicas 1 `
     --transport auto `
     --revision-suffix "00-initial-deploy" `
-    --cpu 0.5
+    --cpu 0.5 `
+    --target-port 80 `
     #--custom-domain $customDomainName `
     # --ingress external `
-    # --target-port 80 `
     #--location $location `
     #--enable-sticky-sessions `
     #--env-vars WEBSITES_PORT=80 `
