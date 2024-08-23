@@ -1,38 +1,41 @@
 # This is the only mandatory one
 $subscriptionId = ""
-$location = "norwayeast"
+# This one needs to be unique globally, so add a suffix
+# Storage account name must be between 3 and 24 characters in length and use numbers and lower-case letters only
+$storageAccountName = "kanvapilotstorage"
+#                   = "123456789012345678901234"
+# This one needs to be unique globally, so add a suffix
+$databaseName = "kanva-pilot-projects-jhi"
+
+$location = "norwayeast" # See valid locations below
 $resourceGroupName = "Kanva-Pilot"
 
 # Storage account
 $accessTier = "Hot"
 $kind = "StorageV2"
 $sku = "Standard_LRS"
-$storageAccountName = "kanvapilotstorage"
 
 # Key Vault
 $keyVaultName = "kanvapilotkv"
-$registryPasswordSecretName = "kanvaRegistryPassword"
-$registryPassword = "erVyzwGay8UkHzVEsNqKzi/2ZO4lj2HIBx+rwLMjm8+ACRAwmfvb"
 
 # Database
-$autoPauseDelay = 60
+$adminPassword = ""
+$adminUser = "sqladmin"
 $backupStorageRedundancy = "Local"
 $capacity = 2
 $computeModel = "Serverless"
-$databaseName = "kanva-pilot-projects"
 $edition = "GeneralPurpose"
 $family = "Gen5"
 $minCapacity = 0.5
-$serverName = "kanva-pilots-db"  # This matches the default value in the template
 
 # Container Apps
-$certificateId = "/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.App/managedEnvironments/$environmentName/managedCertificates/kanva.human-driven.ai-managede-240413074901"
 $customDomainName = "kanva.human-driven.ai"
-$environmentName = "managedEnvironment-KanvaPilot"
-$fqdn = "kanva.whiterock-7e873a3c.norwayeast.azurecontainerapps.io"
-$registryPasswordSecretRef = "reg-pswd-829f0db6-bbd7"
+$containerAppEnvName = "managedEnvironment-KanvaPilot2"
+$registryName = "kanvaimages"
 $registryServer = "kanvaimages.azurecr.io"
-$registryUsername = "kanvaimages"
+$registryUsername = "KanvaPilotCustomer"
+$registryPassword = ""
+
 # Valid locations
 <#
 australiacentral
