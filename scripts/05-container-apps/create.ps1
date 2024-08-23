@@ -5,7 +5,7 @@ function Get-LatestImageTag {
         [string]$repository
     )
     
-    $tags = az acr repository show-tags --name $registryServer --repository $repository --orderby time_desc --output tsv
+    $tags = az acr repository show-tags --name $registryName --repository $repository --orderby time_desc --output tsv
     return ($tags -split "\n")[0]
 }
 
