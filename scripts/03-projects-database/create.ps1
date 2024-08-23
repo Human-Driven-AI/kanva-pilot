@@ -1,6 +1,6 @@
 . "$PSScriptRoot\..\variables.ps1"
 az sql server create `
-    --name $serverName `
+    --name $databaseName `
     --resource-group $resourceGroupName `
     --location $location `
     --admin-user $adminUser `
@@ -8,7 +8,7 @@ az sql server create `
 
 az sql db create `
     --resource-group $resourceGroupName `
-    --server $serverName `
+    --server $databaseName `
     --name $databaseName `
     --edition GeneralPurpose `
     --family Gen5 `
