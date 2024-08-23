@@ -22,5 +22,11 @@ az sql db create `
     --backup-storage-redundancy Local `
     --compute-model $computeModel
 
+az sql server firewall-rule create `
+    --resource-group $resourceGroupName `
+    --server $databaseName `
+    --name "AllowAllAzureServices" `
+    --start-ip-address 0.0.0.0 `
+    --end-ip-address 0.0.0.0
 
 Write-Host "Please create a container app for image efbundle:20230823-0417" -ForegroundColor DarkGreen -BackgroundColor White

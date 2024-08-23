@@ -26,8 +26,9 @@ az containerapp create `
     --revision-suffix "00-initial-deploy" `
     --cpu 0.5 `
     --target-port 80 `
+    --ingress external `
+    --env-vars ConnectionStringsDefault="Server=tcp:$databaseName.database.windows.net,1433;Initial Catalog=$databaseName;Persist Security Info=False;User ID=$adminUser;Password=$adminPassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=120;"
     #--custom-domain $customDomainName `
-    # --ingress external `
     #--location $location `
     #--enable-sticky-sessions `
     #--env-vars WEBSITES_PORT=80 `
