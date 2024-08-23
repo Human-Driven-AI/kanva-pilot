@@ -31,3 +31,5 @@ $args = "/app/src/data_agent_hub_client.py $containerAppUrl --root-data-path /ap
 & "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "delphi:20240514-1434" -containerAppName "delphi-app" -containerName "delphi"
 $args = "/app/src/training_agent_hub_client.py $containerAppUrl --root-data-path /app/data"
 & "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "pythoness:20240506-1143" -containerAppName "pythoness-app" -containerName "pythoness"
+
+Write-Host "Please mount the file share in the agent container apps" -ForegroundColor DarkGreen -BackgroundColor White
