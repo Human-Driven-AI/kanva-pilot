@@ -8,7 +8,7 @@ if ($customConfig) {
     . "$PSScriptRoot\..\config\$customConfig"
 }
 
-$imageName="kanvaimages.azurecr.io/efbundle:20230823-0417"
+$imageName="kanvaimages.azurecr.io/efbundle:$dbMigrationLatestImage"
 
 Write-Log "Creating DB migration job"
 

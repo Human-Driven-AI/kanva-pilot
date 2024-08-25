@@ -35,7 +35,8 @@ az storage share create `
     --account-key $storageAccountKey `
     --quota $fileShareQuota
 
-$configPath = "$PSScriptRoot\..\config\variables.ps1"
+$configFileToUse = if ($customConfig) { $customConfig } else { "variables.ps1" }
+$configPath = "$PSScriptRoot\..\config\$configFileToUse"
 Update-ConfigVariable -ConfigFile $configPath -VariableName "storageAccountKey" -VariableValue $storageAccountKey
 
 # Display the storage account key

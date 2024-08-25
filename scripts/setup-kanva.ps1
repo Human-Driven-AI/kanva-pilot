@@ -1,10 +1,11 @@
+. "$PSScriptRoot\utils\utils.ps1"
 . "$PSScriptRoot\config\variables.ps1"
 
 function Import-CustomConfig {
     $configFiles = Get-ChildItem -Path "$PSScriptRoot\config" -Filter "variables-*.ps1"
     
     Write-Host "Available configurations:"
-    Write-Host "0. Base config"
+    Write-Host "0. Base (default)"
     for ($i = 0; $i -lt $configFiles.Count; $i++) {
         $configName = $configFiles[$i].BaseName -replace '^variables-', ''
         $configName = (Get-Culture).TextInfo.ToTitleCase($configName.ToLower()) -replace '-', ' '
@@ -55,15 +56,15 @@ function Show-CurrentConfig {
 
 # Main menu options
 $menuOptions = @(
-    @{Name="Resource Group"; Script="01-resource-group\create.ps1"; Used=$false},
-    @{Name="Storage Account"; Script="02-storage-account\create.ps1"; Used=$false},
-    @{Name="Projects Database"; Script="03-projects-database\create.ps1"; Used=$false},
-    @{Name="Container App Environment"; Script="04-container-app-environment\create.ps1"; Used=$false},
-    @{Name="Container Apps"; Script="05-container-apps\create.ps1"; Used=$false},
-    @{Name="Utils"; Script="utils\list_files.ps1"; Used=$false},
+    @{Name="Create Resource Group"; Script="01-resource-group\create.ps1"; Used=$false},
+    @{Name="Create Storage Account"; Script="02-storage-account\create.ps1"; Used=$false},
+    @{Name="Create Projects Database"; Script="03-projects-database\create.ps1"; Used=$false},
+    @{Name="Create Container App Environment"; Script="04-container-app-environment\create.ps1"; Used=$false},
+    @{Name="Create Container Apps"; Script="05-container-apps\create.ps1"; Used=$false},
+    @{Name="Utils"; Script=$null; Used=$false},
     @{Name="Print Current Config"; Script=$null; Used=$false},
     @{Name="Load Config"; Script=$null; Used=$false},
-    @{Name="Exit"; Script=$null; Used=$false}
+    @{Name="Fetch Latest Image Tags"; Script=$null; Used=$false}
 )
 
 # Initialize custom config variable
@@ -89,8 +90,10 @@ function Show-Menu {
     
     for ($i = 0; $i -lt $menuOptions.Count; $i++) {
         $checkMark = if ($menuOptions[$i].Used) { "[✅] " } else { "[ ]" }
-        Write-Host ("{1}. {2} {0}" -f $checkMark, ($i + 1), $menuOptions[$i].Name)
+        Write-Host ("{1,2}. {2} {0}" -f $checkMark, ($i + 1), $menuOptions[$i].Name)
     }
+    Write-Host " E. Exit"
+    Write-Host ("")
     Write-Host ("=" * $menuWidth)
 }
 
@@ -102,14 +105,20 @@ function Invoke-MenuOption {
     
     if ($Index -ge 0 -and $Index -lt $menuOptions.Count) {
         $option = $menuOptions[$Index]
-        if ($option.Script) {
+        if ($option.Script) {            
+            $activeSubscription = Get-ActiveAzureSubscription
+            if ($activeSubscription.id -ne $subscriptionId) {
+                Write-Log "Switching to subscription $subscriptionId"
+                az account set --subscription $subscriptionId
+            }
+            
             & "$PSScriptRoot\$($option.Script)" $script:customConfig
             $option.Used = $true
         }
         elseif ($option.Name -eq "Print Current Config") {
             Show-CurrentConfig
         }
-        elseif ($option.Name -eq "Load Custom Config") {
+        elseif ($option.Name -eq "Load Config") {
             $script:customConfig = Import-CustomConfig
         }
         elseif ($option.Name -eq "Exit") {
@@ -158,6 +167,9 @@ while ($continue) {
             default { Write-Host "Invalid selection" }
         }
         $menuOptions[5].Used = $true
+    }
+    if ($selection -eq "e" -or $selection -eq "E") {
+        $continue = $false
     }
     else {
         $continue = Invoke-MenuOption ([int]$selection - 1)

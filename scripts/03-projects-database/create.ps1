@@ -50,7 +50,8 @@ $connectionString = az sql db show-connection-string `
 $connectionString = $connectionString -replace '<username>', $adminUser
 $connectionString = $connectionString -replace '<password>', $adminPassword
 Write-Host $connectionString 
-$configPath = "$PSScriptRoot\..\config\variables.ps1"
+$configFileToUse = if ($customConfig) { $customConfig } else { "variables.ps1" }
+$configPath = "$PSScriptRoot\..\config\$configFileToUse"
 Update-ConfigVariable -ConfigFile $configPath -VariableName "connectionString" -VariableValue $connectionString
 Write-Log "The new connection string: $connectionString has been written to $configPath" -ForegroundColor DarkGreen -BackgroundColor White
 Write-Log "Done"
