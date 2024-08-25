@@ -1,1 +1,3 @@
 variables.ps1
+*.yaml
+*.log

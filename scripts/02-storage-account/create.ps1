@@ -1,4 +1,17 @@
-. "$PSScriptRoot\..\variables.ps1"
+param(
+    [string]$customConfig
+)
+
+. "$PSScriptRoot\..\utils\utils.ps1"
+. "$PSScriptRoot\..\config\variables.ps1"
+if ($customConfig) {
+    . "$PSScriptRoot\..\config\$customConfig"
+}
+
+. "$PSScriptRoot\..\utils\write-config.ps1"
+
+Write-Log "Creating storage account $storageAccountName"
+
 az storage account create `
     --name $storageAccountName `
     --resource-group $resourceGroupName `
@@ -22,6 +35,8 @@ az storage share create `
     --account-key $storageAccountKey `
     --quota $fileShareQuota
 
+$configPath = "$PSScriptRoot\..\config\variables.ps1"
+Update-ConfigVariable -ConfigFile $configPath -VariableName "storageAccountKey" -VariableValue $storageAccountKey
+
 # Display the storage account key
-Write-Host "Storage Account Key: $storageAccountKey"
-Write-Host "Please update variables.ps1 with the storage account key" -ForegroundColor DarkGreen -BackgroundColor White
+Write-Log "The new storage account key: $storageAccountKey has been written to $configPath" -ForegroundColor DarkGreen -BackgroundColor White

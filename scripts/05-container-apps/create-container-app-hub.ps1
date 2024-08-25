@@ -1,13 +1,18 @@
 param (
     [string]$imageName,
     [string]$containerAppName,
-    [string]$containerName
+    [string]$containerName,    
+    [string]$customConfig
 )
 
-. "$PSScriptRoot\..\variables.ps1"
+. "$PSScriptRoot\..\utils\utils.ps1"
+. "$PSScriptRoot\..\config\variables.ps1"
+if ($customConfig) {
+    . "$PSScriptRoot\..\config\$customConfig"
+}
 
-Write-Host "Creating container app $containerAppName from container $containerName and image $imageName"
-Write-Host "registryServer ${registryServer}"
+Write-Log "Creating container app $containerAppName from container $containerName and image $imageName"
+Write-Log "registryServer ${registryServer}"
 
 az containerapp create `
     --subscription $subscriptionId `
@@ -27,8 +32,6 @@ az containerapp create `
     --cpu 0.5 `
     --target-port 80 `
     --ingress external `
-    --env-vars ConnectionStringsDefault="Server=tcp:$databaseName.database.windows.net,1433;Initial Catalog=$databaseName;Persist Security Info=False;User ID=$adminUser;Password=$adminPassword;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=120;"
-    #--custom-domain $customDomainName `
-    #--location $location `
-    #--enable-sticky-sessions `
-    #--env-vars WEBSITES_PORT=80 `
+    --env-vars ConnectionStringsDefault="$connectionString"
+
+Write-Log "Done"

@@ -2,15 +2,18 @@ param (
     [string]$hubUrl,
     [string]$imageName,
     [string]$containerAppName,
-    [string]$containerName
+    [string]$containerName,    
+    [string]$customConfig
 )
 
-. "$PSScriptRoot\..\variables.ps1"
+. "$PSScriptRoot\..\utils\utils.ps1"
+. "$PSScriptRoot\..\config\variables.ps1"
+if ($customConfig) {
+    . "$PSScriptRoot\..\config\$customConfig"
+}
 
-Write-Host "Creating container app $containerAppName from container $containerName and image ${registryServer}/${imageName}"
-Write-Host $registryServer, $registryUsername, $registryPassword 
-Write-Host $hubUrl
-#Write-Host "registryServer ${registryServer} $registryUsername $registryPassword"
+Write-Log "Creating container app $containerAppName from container $containerName and image ${registryServer}/${imageName}"
+Write-Log $hubUrl
 
 az containerapp create `
     --subscription $subscriptionId `
@@ -30,14 +33,4 @@ az containerapp create `
     --cpu 0.5 `
     --env-vars KANVA_HUB_URL=$hubUrl
 
-#Write-Host "Adding storage to container app $storageAccountName $fileShareName"
-# az containerapp storage add `
-#     --name $containerAppName `
-#     --resource-group $resourceGroupName `
-#     --storage-name $storageAccountName `
-#     --access-mode ReadWrite `
-#     --azure-file-account-name $storageAccountName `
-#     --azure-file-account-key $storageAccountKey `
-#     --azure-file-share-name $fileShareName `
-#     --mount-path /app/data `
-#     --mount-options "dir_mode=0777,file_mode=0777,cache=none"
+Write-Log "Done"

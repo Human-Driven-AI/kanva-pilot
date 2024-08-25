@@ -1,4 +1,14 @@
-. "$PSScriptRoot\..\variables.ps1"
+param(
+    [string]$customConfig
+)
+
+. "$PSScriptRoot\..\utils\utils.ps1"
+. "$PSScriptRoot\..\config\variables.ps1"
+if ($customConfig) {
+    . "$PSScriptRoot\..\config\$customConfig"
+}
+
+Write-Log "Creating database server $databaseName"
 az sql server create `
     --name $databaseName `
     --resource-group $resourceGroupName `
@@ -6,6 +16,7 @@ az sql server create `
     --admin-user $adminUser `
     --admin-password $adminPassword
 
+Write-Log "Creating database $databaseName"
 az sql db create `
     --resource-group $resourceGroupName `
     --server $databaseName `
@@ -22,6 +33,7 @@ az sql db create `
     --backup-storage-redundancy Local `
     --compute-model $computeModel
 
+Write-Log "Creating firewall rule to allow all Azure services"
 az sql server firewall-rule create `
     --resource-group $resourceGroupName `
     --server $databaseName `
@@ -29,4 +41,16 @@ az sql server firewall-rule create `
     --start-ip-address 0.0.0.0 `
     --end-ip-address 0.0.0.0
 
-Write-Host "Please create a container app for image efbundle:20230823-0417" -ForegroundColor DarkGreen -BackgroundColor White
+$connectionString = az sql db show-connection-string `
+    --server $databaseName `
+    --name $databaseName `
+    --client ado.net `
+    --output tsv
+
+$connectionString = $connectionString -replace '<username>', $adminUser
+$connectionString = $connectionString -replace '<password>', $adminPassword
+Write-Host $connectionString 
+$configPath = "$PSScriptRoot\..\config\variables.ps1"
+Update-ConfigVariable -ConfigFile $configPath -VariableName "connectionString" -VariableValue $connectionString
+Write-Log "The new connection string: $connectionString has been written to $configPath" -ForegroundColor DarkGreen -BackgroundColor White
+Write-Log "Done"

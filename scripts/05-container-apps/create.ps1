@@ -1,35 +1,51 @@
-. "$PSScriptRoot\..\variables.ps1"
+param(
+    [string]$customConfig
+)
 
-# function Get-LatestImageTag {
-#     param (
-#         [string]$repository
-#     )
-    
-#     $tags = az acr repository show-tags --name $registryName --repository $repository --orderby time_desc --output tsv
-#     return ($tags -split "\n")[0]
-# }
+. "$PSScriptRoot\..\utils\utils.ps1"
+. "$PSScriptRoot\..\config\variables.ps1"
+if ($customConfig) {
+    . "$PSScriptRoot\..\config\$customConfig"
+}
 
-# # Array of container names
-# $containerNames = @("kanva-hub", "delphi", "pythoness")
-# Write-Host "$registryName : $registryName"
 
-# # Loop through each container and create the container app
-# foreach ($containerName in $containerNames) {
-#     # # Get the latest image tag for this container    
-#     $latestTag = Get-LatestImageTag -repository $containerName
-#     Write-Host "Latest tag for $containerName : $latestTag"
-# }
+if (!(Test-ContainerAppJobExists -resourceGroupName $resourceGroupName -jobName $dbMigrationJobName)) {
+    & "$PSScriptRoot\create-db-migration-job.ps1" -customConfig $customConfig
+}
+else {
+    Write-Host "Skipping db migration job creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White
+}
 
-& "$PSScriptRoot\create-container-app-hub.ps1"    -imageName "kanva-hub:20240514-1816" -containerAppName "kanva-hub-app" -containerName "kanva-hub"
+$hubAppName = "kanva-hub-app"
+if (!(Test-ContainerAppExists -resourceGroupName $resourceGroupName -containerAppName $hubAppName)) {
+    & "$PSScriptRoot\create-container-app-hub.ps1" -imageName "kanva-hub:20240514-1816" -containerAppName $hubAppName -containerName "kanva-hub" -customConfig $customConfig
+}
+else {
+    Write-Host "Skipping hub creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White
+}
+
 $hubUrl = az containerapp show `
     --name "kanva-hub-app" `
     --resource-group $resourceGroupName `
     --query "properties.configuration.ingress.fqdn" `
     --output tsv
 $hubUrl =  "https://$hubUrl/hub-agent"
-
 $args = 'KANVA_HUB_URL="{0}" KANVA_ROOT_DATA_PATH="/app/data"' -f $hubUrl
-& "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "delphi:20240825-0156" -containerAppName "delphi-app" -containerName "delphi" -hubUrl $hubUrl
-& "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "pythoness:20240825-0234" -containerAppName "pythoness-app" -containerName "pythoness" -hubUrl $hubUrl
 
-Write-Host "Please mount the file share in the agent container apps" -ForegroundColor DarkGreen -BackgroundColor White
+$delphiAppName = "delphi-app"
+if (!(Test-ContainerAppExists -resourceGroupName $resourceGroupName -containerAppName $delphiAppName)) {
+    & "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "delphi:20240825-0156" -containerAppName $delphiAppName -containerName "delphi" -hubUrl $hubUrl -customConfig $customConfig
+    & "$PSScriptRoot\mount-storage.ps1" -containerAppName $delphiAppName
+}
+else {
+    Write-Host "Skipping data agent creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White
+}
+
+$pythonessAppName = "pythoness-app"
+if (!(Test-ContainerAppExists -resourceGroupName $resourceGroupName -containerAppName $pythonessAppName)) {
+    & "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "pythoness:20240825-0234" -containerAppName $pythonessAppName -containerName "pythoness" -hubUrl $hubUrl -customConfig $customConfig
+    & "$PSScriptRoot\mount-storage.ps1" -containerAppName $pythonessAppName
+}
+else {
+    Write-Host "Skipping training agent creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White
+}
