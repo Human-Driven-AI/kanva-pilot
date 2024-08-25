@@ -1,5 +1,3 @@
-# setup-kanva.ps1
-
 # Function to load custom configuration
 function Load-CustomConfig {
     $configFiles = Get-ChildItem -Path "$PSScriptRoot\config" -Filter "variables-*.ps1"
@@ -44,69 +42,115 @@ function Print-CurrentConfig {
 
 # Main menu options
 $menuOptions = @(
-    "Resource Group",
-    "Storage Account",
-    "Projects Database",
-    "Container App Environment",
-    "Container Apps",
-    "Utils",
-    "Print Current Config",
-    "Load Custom Config",
-    "Exit"
+    @{Name="Resource Group"; Script="01-resource-group\create.ps1"; Used=$false},
+    @{Name="Storage Account"; Script="02-storage-account\create.ps1"; Used=$false},
+    @{Name="Projects Database"; Script="03-projects-database\create.ps1"; Used=$false},
+    @{Name="Container App Environment"; Script="04-container-app-environment\create.ps1"; Used=$false},
+    @{Name="Container Apps"; Script="05-container-apps\create.ps1"; Used=$false},
+    @{Name="Utils"; Script="utils\list_files.ps1"; Used=$false},
+    @{Name="Print Current Config"; Script=$null; Used=$false},
+    @{Name="Load Custom Config"; Script=$null; Used=$false},
+    @{Name="Exit"; Script=$null; Used=$false}
 )
 
 # Initialize custom config variable
 $script:customConfig = $null
 
-# Main loop
-while ($true) {
+# Function to display the menu
+function Show-Menu {
+    $currentConfig = if ($script:customConfig) { 
+        ($script:customConfig -replace '^variables-', '' -replace '\.ps1$', '') -replace '-', ' '
+    } else { 
+        "Base" 
+    }
+    
+    $menuWidth = 50
+    $configDisplay = "Config: $currentConfig".PadLeft($menuWidth)
+    
     Clear-Host
-    Write-Host "=== Kanva Setup Menu ===" -ForegroundColor DarkGreen -BackgroundColor White
+    Write-Host $configDisplay
+    Write-Host (" " * $menuWidth) -BackgroundColor White
+    Write-Host " Kanva Setup Menu".PadRight($menuWidth) -ForegroundColor DarkGreen -BackgroundColor White
+    Write-Host (" " * $menuWidth) -BackgroundColor White
+    Write-Host ("")
+    
     for ($i = 0; $i -lt $menuOptions.Count; $i++) {
-        Write-Host "$($i + 1). $($menuOptions[$i])"
+        $checkMark = if ($menuOptions[$i].Used) { "[✅] " } else { "[ ]" }
+        Write-Host ("{0}{1}. {2}" -f $checkMark, ($i + 1), $menuOptions[$i].Name)
     }
+    Write-Host ("=" * $menuWidth)
+}
 
+# Function to run a script and mark it as used
+function Invoke-MenuOption {
+    param (
+        [int]$Index
+    )
+    
+    if ($Index -ge 0 -and $Index -lt $menuOptions.Count) {
+        $option = $menuOptions[$Index]
+        if ($option.Script) {
+            & "$PSScriptRoot\$($option.Script)" $script:customConfig
+            $option.Used = $true
+        }
+        elseif ($option.Name -eq "Print Current Config") {
+            Print-CurrentConfig
+        }
+        elseif ($option.Name -eq "Load Custom Config") {
+            $script:customConfig = Load-CustomConfig
+        }
+        elseif ($option.Name -eq "Exit") {
+            return $false
+        }
+    }
+    else {
+        Write-Host "Invalid selection"
+    }
+    return $true
+}
+
+# Main loop
+$continue = $true
+while ($continue) {
+    Show-Menu
     $selection = Read-Host "Enter your choice"
-
-    switch ($selection) {
-        "1" { & "$PSScriptRoot\01-resource-group\create.ps1" $script:customConfig }
-        "2" { & "$PSScriptRoot\02-storage-account\create.ps1" $script:customConfig }
-        "3" { & "$PSScriptRoot\03-projects-database\create.ps1" $script:customConfig }
-        "4" { & "$PSScriptRoot\04-container-app-environment\create.ps1" $script:customConfig }
-        "5" {
-            Write-Host "Container Apps submenu:"
-            Write-Host "1. Create Container App Hub"
-            Write-Host "2. Create Container Apps Agent"
-            Write-Host "3. Create"
-            Write-Host "4. Mount Storage"
-            Write-Host "5. Test"
-            $subSelection = Read-Host "Enter your choice"
-            switch ($subSelection) {
-                "1" { & "$PSScriptRoot\05-container-apps\create-container-app-hub.ps1" $script:customConfig }
-                "2" { & "$PSScriptRoot\05-container-apps\create-container-apps-agent.ps1" $script:customConfig }
-                "3" { & "$PSScriptRoot\05-container-apps\create.ps1" $script:customConfig }
-                "4" { & "$PSScriptRoot\05-container-apps\mount_storage.ps1" $script:customConfig }
-                "5" { & "$PSScriptRoot\05-container-apps\test.ps1" $script:customConfig }
-                default { Write-Host "Invalid selection" }
-            }
+    
+    if ($selection -eq "5") {
+        Write-Host "Container Apps submenu:"
+        Write-Host "1. Create Container App Hub"
+        Write-Host "2. Create Container Apps Agent"
+        Write-Host "3. Create"
+        Write-Host "4. Mount Storage"
+        Write-Host "5. Test"
+        $subSelection = Read-Host "Enter your choice"
+        switch ($subSelection) {
+            "1" { & "$PSScriptRoot\05-container-apps\create-container-app-hub.ps1" $script:customConfig }
+            "2" { & "$PSScriptRoot\05-container-apps\create-container-apps-agent.ps1" $script:customConfig }
+            "3" { & "$PSScriptRoot\05-container-apps\create.ps1" $script:customConfig }
+            "4" { & "$PSScriptRoot\05-container-apps\mount_storage.ps1" $script:customConfig }
+            "5" { & "$PSScriptRoot\05-container-apps\test.ps1" $script:customConfig }
+            default { Write-Host "Invalid selection" }
         }
-        "6" {
-            Write-Host "Utils submenu:"
-            Write-Host "1. Fetch Last Container Tags"
-            Write-Host "2. List Files"
-            $subSelection = Read-Host "Enter your choice"
-            switch ($subSelection) {
-                "1" { & "$PSScriptRoot\utils\fetch-last-container-tags.ps1" $script:customConfig }
-                "2" { & "$PSScriptRoot\utils\list_files.ps1" $script:customConfig }
-                default { Write-Host "Invalid selection" }
-            }
+        $menuOptions[4].Used = $true
+    }
+    elseif ($selection -eq "6") {
+        Write-Host "Utils submenu:"
+        Write-Host "1. Fetch Last Container Tags"
+        Write-Host "2. List Files"
+        $subSelection = Read-Host "Enter your choice"
+        switch ($subSelection) {
+            "1" { & "$PSScriptRoot\utils\fetch-last-container-tags.ps1" $script:customConfig }
+            "2" { & "$PSScriptRoot\utils\list_files.ps1" $script:customConfig }
+            default { Write-Host "Invalid selection" }
         }
-        "7" { Print-CurrentConfig }
-        "8" { $script:customConfig = Load-CustomConfig }
-        "9" { exit }
-        default { Write-Host "Invalid selection" }
+        $menuOptions[5].Used = $true
+    }
+    else {
+        $continue = Invoke-MenuOption ([int]$selection - 1)
     }
 
-    Write-Host "Press any key to continue..."
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    if ($continue) {
+        Write-Host "Press any key to continue..."
+        $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    }
 }
