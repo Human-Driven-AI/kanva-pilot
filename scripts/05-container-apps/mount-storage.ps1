@@ -64,4 +64,7 @@ az containerapp update `
   --yaml updated_app.yaml `
   --output table
 
+# Remove the temporary files
+Remove-Item -Path app.yaml, updated_app.yaml
+
 Write-Log "Done"
