@@ -1,5 +1,5 @@
 param (
-    [string]$entryPointArgs,
+    [string]$hubUrl,
     [string]$imageName,
     [string]$containerAppName,
     [string]$containerName
@@ -8,6 +8,8 @@ param (
 . "$PSScriptRoot\..\variables.ps1"
 
 Write-Host "Creating container app $containerAppName from container $containerName and image ${registryServer}/${imageName}"
+Write-Host $registryServer, $registryUsername, $registryPassword 
+Write-Host $hubUrl
 #Write-Host "registryServer ${registryServer} $registryUsername $registryPassword"
 
 az containerapp create `
@@ -26,13 +28,7 @@ az containerapp create `
     --transport auto `
     --revision-suffix "00-initial-deploy" `
     --cpu 0.5 `
-    --args $entryPointArgs `
-    #--custom-domain $customDomainName `
-    # --ingress external `
-    # --target-port 80 `
-    #--location $location `
-    #--enable-sticky-sessions `
-    #--env-vars WEBSITES_PORT=80 `
+    --env-vars KANVA_HUB_URL=$hubUrl
 
 #Write-Host "Adding storage to container app $storageAccountName $fileShareName"
 # az containerapp storage add `

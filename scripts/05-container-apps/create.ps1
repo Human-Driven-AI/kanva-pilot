@@ -21,15 +21,15 @@
 # }
 
 & "$PSScriptRoot\create-container-app-hub.ps1"    -imageName "kanva-hub:20240514-1816" -containerAppName "kanva-hub-app" -containerName "kanva-hub"
-$containerAppUrl = az containerapp show `
+$hubUrl = az containerapp show `
     --name "kanva-hub-app" `
     --resource-group $resourceGroupName `
     --query "properties.configuration.ingress.fqdn" `
     --output tsv
+$hubUrl =  "https://$hubUrl/hub-agent"
 
-$args = "/app/src/data_agent_hub_client.py $containerAppUrl --root-data-path /app/data"
-& "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "delphi:20240514-1434" -containerAppName "delphi-app" -containerName "delphi"
-$args = "/app/src/training_agent_hub_client.py $containerAppUrl --root-data-path /app/data"
-& "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "pythoness:20240506-1143" -containerAppName "pythoness-app" -containerName "pythoness"
+$args = 'KANVA_HUB_URL="{0}" KANVA_ROOT_DATA_PATH="/app/data"' -f $hubUrl
+& "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "delphi:20240825-0156" -containerAppName "delphi-app" -containerName "delphi" -hubUrl $hubUrl
+& "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "pythoness:20240825-0234" -containerAppName "pythoness-app" -containerName "pythoness" -hubUrl $hubUrl
 
 Write-Host "Please mount the file share in the agent container apps" -ForegroundColor DarkGreen -BackgroundColor White
