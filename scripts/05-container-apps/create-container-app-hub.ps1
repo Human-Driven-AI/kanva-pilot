@@ -32,6 +32,6 @@ az containerapp create `
     --cpu 0.5 `
     --target-port 80 `
     --ingress external `
-    --env-vars ConnectionStringsDefault="$connectionString"
+    --env-vars ConnectionStringsDefault="$connectionString" EnableAuthentication=false CorsOrigins=""
 
 Write-Log "Done"

@@ -8,8 +8,24 @@ function Get-ActiveAzureSubscription {
     
     if ($subscription) {
         return $subscription
-    } else {
+    }
+    else {
         Write-Error "No active subscription found. Please log in to Azure or set an active subscription."
         return $null
     }
+}
+
+function Get-HubUrl {
+    param (
+        [string]$hubAppName,
+        [string]$resourceGroupName
+    )
+    $hubUrl = az containerapp show `
+        --name $hubAppName `
+        --resource-group $resourceGroupName `
+        --query "properties.configuration.ingress.fqdn" `
+        --output tsv
+    $hubUrl = "https://$hubUrl/hub-agent"
+
+    return $hubUrl
 }
