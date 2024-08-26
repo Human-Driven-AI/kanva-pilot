@@ -1,6 +1,9 @@
 . "$PSScriptRoot\utils\utils.ps1"
 . "$PSScriptRoot\config\variables.ps1"
 
+$script:customConfig = $null
+$script:subscriptionId = $subscriptionId
+
 function Import-CustomConfig {
     $configFiles = Get-ChildItem -Path "$PSScriptRoot\config" -Filter "variables-*.ps1"
     
@@ -18,13 +21,19 @@ function Import-CustomConfig {
         
         if ($selection -eq 'C' -or $selection -eq 'c') {
             Write-Host "Operation cancelled. No changes made to configuration."
-            return $null
+            return @{
+                CustomConfig = $script:customConfig
+                SubscriptionId = $script:subscriptionId
+            }
         }
 
         if ($selection -eq '0') {
             . "$PSScriptRoot\config\variables.ps1"
             Write-Host "Loaded base configuration."
-            return $null
+            return @{
+                CustomConfig = $null
+                SubscriptionId = $subscriptionId
+            }
         }
 
         $index = [int]$selection - 1
@@ -33,7 +42,10 @@ function Import-CustomConfig {
             . "$PSScriptRoot\config\variables.ps1"
             . "$PSScriptRoot\config\$selectedConfig"
             Write-Host "Loaded custom configuration: $selectedConfig"
-            return $selectedConfig
+            return @{
+                CustomConfig = $selectedConfig
+                SubscriptionId = $subscriptionId  # Assuming $subscriptionId is set in the custom config
+            }
         }
         
         Write-Host "Invalid selection. Please try again."
@@ -67,9 +79,6 @@ $menuOptions = @(
     @{Name="Fetch Latest Image Tags"; Script=$null; Used=$false}
 )
 
-# Initialize custom config variable
-$script:customConfig = $null
-
 # Function to display the menu
 function Show-Menu {
     $currentConfig = if ($script:customConfig) { 
@@ -79,7 +88,7 @@ function Show-Menu {
     }
     
     $menuWidth = 60
-    $configDisplay = "Config: $currentConfig (${subscriptionId})".PadLeft($menuWidth)
+    $configDisplay = "Config: $currentConfig ($script:subscriptionId)".PadLeft($menuWidth)
     
     Clear-Host
     Write-Host $configDisplay
@@ -107,8 +116,8 @@ function Invoke-MenuOption {
         $option = $menuOptions[$Index]
         if ($option.Script) {            
             $activeSubscription = Get-ActiveAzureSubscription
-            if ($activeSubscription.id -ne $subscriptionId) {
-                Write-Log "Switching to subscription $subscriptionId"
+            if ($activeSubscription.id -ne $script:subscriptionId) {
+                Write-Log "Switching to subscription $subscriptionId"                
                 az account set --subscription $subscriptionId
             }
             
@@ -119,7 +128,9 @@ function Invoke-MenuOption {
             Show-CurrentConfig
         }
         elseif ($option.Name -eq "Load Config") {
-            $script:customConfig = Import-CustomConfig
+            $result = Import-CustomConfig
+            $script:customConfig = $result.CustomConfig
+            $script:subscriptionId = $result.SubscriptionId
         }
         elseif ($option.Name -eq "Exit") {
             return $false

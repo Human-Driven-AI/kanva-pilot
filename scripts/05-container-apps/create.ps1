@@ -35,7 +35,7 @@ $args = 'KANVA_HUB_URL="{0}" KANVA_ROOT_DATA_PATH="/app/data"' -f $hubUrl
 $delphiAppName = "delphi-app"
 if (!(Test-ContainerAppExists -resourceGroupName $resourceGroupName -containerAppName $delphiAppName)) {
     & "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "delphi:$delphiLatestImage" -containerAppName $delphiAppName -containerName "delphi" -hubUrl $hubUrl -customConfig $customConfig
-    & "$PSScriptRoot\mount-storage.ps1" -containerAppName $delphiAppName
+    & "$PSScriptRoot\mount-storage.ps1" -containerAppName $delphiAppName -customConfig $customConfig
 }
 else {
     Write-Host "Skipping data agent creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White
@@ -44,7 +44,7 @@ else {
 $pythonessAppName = "pythoness-app"
 if (!(Test-ContainerAppExists -resourceGroupName $resourceGroupName -containerAppName $pythonessAppName)) {
     & "$PSScriptRoot\create-container-apps-agent.ps1" -imageName "pythoness:$pythonessLatestImage" -containerAppName $pythonessAppName -containerName "pythoness" -hubUrl $hubUrl -customConfig $customConfig
-    & "$PSScriptRoot\mount-storage.ps1" -containerAppName $pythonessAppName
+    & "$PSScriptRoot\mount-storage.ps1" -containerAppName $pythonessAppName -customConfig $customConfig
 }
 else {
     Write-Host "Skipping training agent creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White

@@ -33,8 +33,8 @@ $config = ConvertFrom-Yaml $yamlContent
 $config.properties.template.volumes = @(
     @{
         mountOptions = "dir_mode=0777,file_mode=0777,cache=none"
-        name = "kanvapilotdata"
-        storageName = "kanvapilotdata"
+        name = $fileShareName
+        storageName = $fileShareName
         storageType = "AzureFile"
     }
 )
@@ -44,7 +44,7 @@ if ($null -eq $config.properties.template.containers[0].volumeMounts) {
 }
 
 $config.properties.template.containers[0].volumeMounts += @{
-    volumeName = "kanvapilotdata"
+    volumeName = $fileShareName
     mountPath = "/app/data"
 }
 
