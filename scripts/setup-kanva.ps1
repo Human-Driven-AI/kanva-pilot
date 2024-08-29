@@ -75,8 +75,7 @@ $menuOptions = @(
     @{Name="Create Container Apps"; Script="05-container-apps\create.ps1"; Used=$false},
     @{Name="Utils"; Script=$null; Used=$false},
     @{Name="Print Current Config"; Script=$null; Used=$false},
-    @{Name="Load Config"; Script=$null; Used=$false},
-    @{Name="Fetch Latest Image Tags"; Script=$null; Used=$false}
+    @{Name="Load Config"; Script=$null; Used=$false}
 )
 
 # Function to display the menu
@@ -97,9 +96,12 @@ function Show-Menu {
     Write-Host (" " * $menuWidth) -BackgroundColor White
     Write-Host ("")
     
-    for ($i = 0; $i -lt $menuOptions.Count; $i++) {
+    for ($i = 0; $i -lt 5; $i++) {
         $checkMark = if ($menuOptions[$i].Used) { "[✅] " } else { "[ ]" }
-        Write-Host ("{1,2}. {2} {0}" -f $checkMark, ($i + 1), $menuOptions[$i].Name)
+        Write-Host ("{0,2}. {1} {2}" -f ($i + 1), $menuOptions[$i].Name, $checkMark)
+    }
+    for ($i = 5; $i -lt $menuOptions.Count; $i++) {
+        Write-Host ("{0,2}. {1}" -f ($i + 1), $menuOptions[$i].Name)
     }
     Write-Host " E. Exit"
     Write-Host ("")
