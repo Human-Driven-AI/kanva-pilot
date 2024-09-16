@@ -29,3 +29,18 @@ function Get-HubUrl {
 
     return $hubUrl
 }
+
+function Test-ContainerAppEnvironmentExists {
+    param (
+        [string]$containerAppEnvName,
+        [string]$resourceGroupName
+    )
+    
+    $exists = az containerapp env show --name $containerAppEnvName --resource-group $resourceGroupName --query "name" --output tsv 2>$null
+    
+    if ($exists -eq $containerAppEnvName) {
+        return $true
+    } else {
+        return $false
+    }
+}

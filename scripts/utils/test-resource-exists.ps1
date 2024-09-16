@@ -10,7 +10,7 @@ function Test-AzureResourceExists {
         [string]$AzCommand
     )
 
-    $result = Invoke-Expression "$AzCommand --name $ResourceName --resource-group $resourceGroupName --query 'name' --output tsv 2>&1"
+    $result = Invoke-Expression "$AzCommand --name $ResourceName --resource-group $resourceGroupName --query 'name' --output tsv 2>null"
     
     return ($LASTEXITCODE -eq 0 -and $result -eq $ResourceName)
 }
