@@ -50,3 +50,29 @@ function Test-LogAnalyticsWorkspaceExists {
 
     return Test-AzureResourceExists -ResourceGroupName $resourceGroupName -ResourceName $workspaceName -AzCommand "az monitor log-analytics workspace show"
 }
+
+function Test-KeyVaultExists {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$resourceGroupName,
+
+        [Parameter(Mandatory=$true)]
+        [string]$keyVaultName
+    )
+
+    return Test-AzureResourceExists -ResourceGroupName $resourceGroupName -ResourceName $keyVaultName -AzCommand "az keyvault show"
+}
+
+function Test-KeyVaultSoftDeleted {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$keyVaultName,
+
+        [Parameter(Mandatory=$true)]
+        [string]$location
+    )
+
+    $result = az keyvault list-deleted --query "[?name=='$keyVaultName' && properties.location=='$location'].name" --output tsv 2>$null
+    
+    return ($LASTEXITCODE -eq 0 -and $result -eq $keyVaultName)
+}
