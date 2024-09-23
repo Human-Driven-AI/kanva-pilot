@@ -22,7 +22,7 @@ if (!(Test-ContainerAppExists -resourceGroupName $resourceGroupName -containerAp
 else {
     Write-Host "Skipping hub creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White
 }
-& "$PSScriptRoot\grant-key-vault-access.ps1" -containerAppName $hubAppName -customConfig $customConfig -secretPermissions @("get", "list", "set")
+& "$PSScriptRoot\grant-key-vault-access.ps1" -containerAppName $hubAppName -customConfig $customConfig -secretPermissions @("delete", "get", "list", "set")
 
 $hubUrl = az containerapp show `
     --name $hubAppName `

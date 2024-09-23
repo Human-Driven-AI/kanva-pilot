@@ -33,6 +33,6 @@ az containerapp create `
     --target-port 80 `
     --ingress external `
     --secrets connectionstringsdefault="$connectionString" `
-    --env-vars ConnectionStringsDefault="secretref:connectionstringsdefault" EnableAuthentication=false CorsOrigins=""
+    --env-vars ConnectionStringsDefault="secretref:connectionstringsdefault" EnableAuthentication=false CorsOrigins="" KeyVaultUrl="$keyVaultUrl"
 
 Write-Log "Done"

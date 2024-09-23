@@ -38,3 +38,15 @@ function Test-ContainerAppJobExists {
 
     return Test-AzureResourceExists -ResourceGroupName $resourceGroupName -ResourceName $jobName -AzCommand "az containerapp job show"
 }
+
+function Test-LogAnalyticsWorkspaceExists {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$resourceGroupName,
+
+        [Parameter(Mandatory=$true)]
+        [string]$workspaceName
+    )
+
+    return Test-AzureResourceExists -ResourceGroupName $resourceGroupName -ResourceName $workspaceName -AzCommand "az monitor log-analytics workspace show"
+}

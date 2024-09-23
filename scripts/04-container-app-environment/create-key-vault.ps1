@@ -16,7 +16,7 @@ if ($createPublicKeyVault) {
 }
 
 # Create the Key Vault
-az keyvault create `
+$keyVaultUrl = $(az keyvault create `
     --name $keyVaultName `
     --resource-group $resourceGroupName `
     --location $location `
@@ -26,6 +26,12 @@ az keyvault create `
     --enabled-for-deployment false `
     --enabled-for-disk-encryption false `
     --enabled-for-template-deployment false `
-    --retention-days 90
+    --retention-days 90 `
+    --query "properties.vaultUri" `
+    --output tsv)
+
+$configFileToUse = if ($customConfig) { $customConfig } else { "variables.ps1" }
+$configPath = "$PSScriptRoot\..\config\$configFileToUse"
+Update-ConfigVariable -ConfigFile $configPath -VariableName "keyVaultUrl" -VariableValue $keyVaultUrl
 
 Write-Log "Done"
