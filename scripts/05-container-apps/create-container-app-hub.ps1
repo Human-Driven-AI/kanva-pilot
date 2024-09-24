@@ -1,8 +1,10 @@
 param (
-    [string]$imageName,
     [string]$containerAppName,
     [string]$containerName,    
-    [string]$customConfig
+    [string]$customConfig,
+    [string]$identityClientId,
+    [string]$identityResourceId,
+    [string]$imageName
 )
 
 . "$PSScriptRoot\..\utils\utils.ps1"
@@ -33,6 +35,7 @@ az containerapp create `
     --target-port 80 `
     --ingress external `
     --secrets connectionstringsdefault="$connectionString" `
-    --env-vars ConnectionStringsDefault="secretref:connectionstringsdefault" EnableAuthentication=false CorsOrigins="" KeyVaultUrl="$keyVaultUrl"
+    --env-vars ConnectionStringsDefault="secretref:connectionstringsdefault" EnableAuthentication=false CorsOrigins="" KeyVaultUrl="$keyVaultUrl" ManagedIdentityClientId="$identityClientId" SecretsStore="AzureKeyVault" `
+    --user-assigned $identityResourceId
 
 Write-Log "Done"

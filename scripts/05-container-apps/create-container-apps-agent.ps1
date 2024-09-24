@@ -1,9 +1,10 @@
 param (
-    [string]$hubUrl,
-    [string]$imageName,
     [string]$containerAppName,
     [string]$containerName,    
-    [string]$customConfig
+    [string]$customConfig,
+    [string]$identityClientId,
+    [string]$identityResourceId,
+    [string]$imageName
 )
 
 . "$PSScriptRoot\..\utils\utils.ps1"
@@ -13,7 +14,7 @@ if ($customConfig) {
 }
 
 Write-Log "Creating container app $containerAppName from container $containerName and image ${registryServer}/${imageName}"
-Write-Log $hubUrl
+Write-Log $hubAgentUrl
 
 az containerapp create `
     --subscription $subscriptionId `
@@ -31,6 +32,7 @@ az containerapp create `
     --transport auto `
     --revision-suffix "00-initial-deploy" `
     --cpu 0.5 `
-    --env-vars KANVA_HUB_URL=$hubUrl
+    --env-vars KANVA_HUB_URL=$hubAgentUrl ManagedIdentityClientId="$identityClientId" `
+    --user-assigned $identityResourceId
 
 Write-Log "Done"
