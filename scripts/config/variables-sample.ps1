@@ -1,84 +1,44 @@
+Write-Host "Loading base configuration."
+
+$tenantId = ""
+$hdaiTenantId = $tenantId
 # This is the only mandatory one
 $subscriptionId = ""
+$hdaiSubscriptionId = $subscriptionId
+# Used to make the identifiers that need it globally unique
+$clientSuffix = "tv1"
 # This one needs to be unique globally, so add a suffix
 # Storage account name must be between 3 and 24 characters in length and use numbers and lower-case letters only
-$storageAccountName = "kanvapilotstorage"
+$storageAccountName = "kanvaoffer$clientSuffix"
 #                   = "123456789012345678901234"
 # This one needs to be unique globally, so add a suffix
-$databaseName = "kanva-pilot-projects-jhi"
+$databaseName = "kanva-offer-projects-$clientSuffix"
+# Must be unique globally
+$keyVaultName = "kanva-key-vault-$clientSuffix"
+$createPublicKeyVault = $true
+$keyVaultUrl = ""
 
-$location = "norwayeast" # See valid locations below
-$resourceGroupName = "Kanva-Pilot"
-
-# Storage account
-$accessTier = "Hot"
-$kind = "StorageV2"
-$sku = "Standard_LRS"
-
-# Key Vault
-$keyVaultName = "kanvapilotkv"
-
-# Database
-$adminPassword = ""
+$resourceGroupName = "Kanva-Offfer"
+$storageAccountKey = ""
 $adminUser = "sqladmin"
-$backupStorageRedundancy = "Local"
-$capacity = 2
-$computeModel = "Serverless"
-$edition = "GeneralPurpose"
-$family = "Gen5"
-$minCapacity = 0.5
+$adminPassword = ""
+$connectionString = ""
 
-# Container Apps
-$customDomainName = "kanva.human-driven.ai"
-$containerAppEnvName = "managedEnvironment-KanvaPilot2"
-$registryName = "kanvaimages"
-$registryServer = "kanvaimages.azurecr.io"
-$registryUsername = "KanvaPilotCustomer"
 $registryPassword = ""
 
-# Valid locations
-<#
-australiacentral
-australiacentral2
-australiaeast
-australiasoutheast
-brazilsouth
-canadacentral
-canadaeast
-centralindia
-centralus
-eastasia
-eastus
-eastus2
-francecentral
-germanywestcentral
-israelcentral
-italynorth
-japaneast
-japanwest
-jioindiawest
-koreacentral
-koreasouth
-mexicocentral
-northcentralus
-northeurope
-norwayeast
-polandcentral
-qatarcentral
-southafricanorth
-southcentralus
-southeastasia
-southindia
-spaincentral
-swedencentral
-switzerlandnorth
-uaenorth
-uksouth
-ukwest
-westcentralus
-westeurope
-westindia
-westus
-westus2
-westus3
-#>
+$hubAgentUrl = ""
+$hubAppName = "kanva-hub"
+$delphiAppName = "delphi"
+$pythonessAppName = "pythoness"
+
+$dbMigrationLatestImage = "20230823-0417"
+$hubLatestImage = "20240919-1144"
+$delphiLatestImage = "20240919-0658"
+$pythonessLatestImage = "20240919-0655"
+$hubUrl = ""
+
+$enableAuthentication = $true
+$signInAudience = "AzureADandPersonalMicrosoftAccount"
+
+. "$PSScriptRoot/common.ps1"
+

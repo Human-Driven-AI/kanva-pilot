@@ -28,7 +28,7 @@ if ($existingIdentity) {
 $existingPolicy = $(az keyvault show --name $keyVaultName --query "properties.accessPolicies[?objectId=='$principalId']" -o tsv)
 
 if ($existingPolicy) {
-    Write-Log "Policy already exists for $principalId. Skipping policy creation."
+    Write-Log "Policy already exists for principalId $principalId. Skipping policy creation."
 } else {
     Write-Log "Creating Key Vault policy with permissions: $secretPermissions."
     az keyvault set-policy --name $keyVaultName --object-id $principalId --secret-permissions $secretPermissions
