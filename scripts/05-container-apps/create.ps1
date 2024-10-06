@@ -19,7 +19,7 @@ else {
 $hubIdentity = & "$PSScriptRoot\grant-key-vault-access.ps1" -containerAppName $hubAppName -customConfig $customConfig -secretPermissions @("delete", "get", "list", "set")
 
 if (!(Test-ContainerAppExists -resourceGroupName $resourceGroupName -containerAppName $hubAppName)) {
-    & "$PSScriptRoot\create-container-app-hub.ps1" -imageName "kanva-hub:$hubLatestImage" -containerAppName $hubAppName -containerName "kanva-hub" -customConfig $customConfig -identityResourceId $hubIdentity.IdentityResourceId -identityClientId $hubIdentity.ClientId
+    & "$PSScriptRoot\create-container-app-hub.ps1" -imageName "hub:$hubLatestImage" -containerAppName $hubAppName -containerName "kanva-hub" -customConfig $customConfig -identityResourceId $hubIdentity.IdentityResourceId -identityClientId $hubIdentity.ClientId
 }
 else {
     Write-Host "Skipping hub creation as it already exists" -ForegroundColor DarkGreen -BackgroundColor White

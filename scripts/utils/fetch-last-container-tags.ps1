@@ -11,7 +11,17 @@ function Get-LatestImageTag {
     )
     
     $tags = az acr repository show-tags --name $registryName --repository $repository --orderby time_desc --output tsv
-    return ($tags -split "\n")[0]
+    
+    $tagList = $tags -split "\n"
+    
+    foreach ($tag in $tagList) {
+        if ($tag -ne "marketplace") {
+            return $tag
+        }
+    }
+    
+    Write-Warning "No non-marketplace tags found for repository $repository"
+    return $null
 }
 
 $configPath = "$PSScriptRoot\..\config\variables.ps1"
@@ -21,7 +31,7 @@ if ($latestTag -ne $dbMigrationLatestImage) {
     Update-ConfigVariable -ConfigFile $configPath -VariableName "dbMigrationLatestImage" -VariableValue $latestTag
 }
 
-$latestTag = Get-LatestImageTag -repository "kanva-hub"
+$latestTag = Get-LatestImageTag -repository "hub"
 if ($latestTag -ne $hubLatestImage) {
     Update-ConfigVariable -ConfigFile $configPath -VariableName "hubLatestImage" -VariableValue $latestTag
 }

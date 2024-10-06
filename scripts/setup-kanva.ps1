@@ -73,6 +73,8 @@ $menuOptions = @(
     @{Name="Create Projects Database"; Script="03-projects-database\create.ps1"; Used=$false},
     @{Name="Create Container App Environment"; Script="04-container-app-environment\create.ps1"; Used=$false},
     @{Name="Create Container Apps"; Script="05-container-apps\create.ps1"; Used=$false},
+    @{Name="Create App Registration (For Authentication)"; Script="06-app-registration\create.ps1"; Used=$false},
+    @{Name="Update Apps To Latest Revision"; Script="07-update-container-apps\update.ps1"; Used=$false},
     @{Name="Utils"; Script=$null; Used=$false},
     @{Name="Print Current Config"; Script=$null; Used=$false},
     @{Name="Load Config"; Script=$null; Used=$false}
@@ -96,11 +98,11 @@ function Show-Menu {
     Write-Host (" " * $menuWidth) -BackgroundColor White
     Write-Host ("")
     
-    for ($i = 0; $i -lt 5; $i++) {
+    for ($i = 0; $i -lt 7; $i++) {
         $checkMark = if ($menuOptions[$i].Used) { "[✅] " } else { "[ ]" }
         Write-Host ("{0,2}. {1} {2}" -f ($i + 1), $menuOptions[$i].Name, $checkMark)
     }
-    for ($i = 5; $i -lt $menuOptions.Count; $i++) {
+    for ($i = 7; $i -lt $menuOptions.Count; $i++) {
         Write-Host ("{0,2}. {1}" -f ($i + 1), $menuOptions[$i].Name)
     }
     Write-Host " E. Exit"
@@ -150,26 +152,7 @@ while ($continue) {
     Show-Menu
     $selection = Read-Host "Enter your choice"
     
-    # if ($selection -eq "5") {
-    #     Write-Host "Container Apps submenu:"
-    #     Write-Host "1. Create Container App Hub"
-    #     Write-Host "2. Create Container Apps Agent"
-    #     Write-Host "3. Create"
-    #     Write-Host "4. Mount Storage"
-    #     Write-Host "5. Test"
-    #     $subSelection = Read-Host "Enter your choice"
-    #     switch ($subSelection) {
-    #         "1" { & "$PSScriptRoot\05-container-apps\create-container-app-hub.ps1" $script:customConfig }
-    #         "2" { & "$PSScriptRoot\05-container-apps\create-container-apps-agent.ps1" $script:customConfig }
-    #         "3" { & "$PSScriptRoot\05-container-apps\create.ps1" $script:customConfig }
-    #         "4" { & "$PSScriptRoot\05-container-apps\mount_storage.ps1" $script:customConfig }
-    #         "5" { & "$PSScriptRoot\05-container-apps\test.ps1" $script:customConfig }
-    #         default { Write-Host "Invalid selection" }
-    #     }
-    #     $menuOptions[4].Used = $true
-    # }
-    # else
-    if ($selection -eq "6") {
+    if ($selection -eq "8") {
         Write-Host "Utils submenu:"
         Write-Host "1. Fetch Last Container Tags"
         Write-Host "2. List Files"
