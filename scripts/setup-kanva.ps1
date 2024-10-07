@@ -74,7 +74,7 @@ $menuOptions = @(
     @{Name="Create Container App Environment"; Script="04-container-app-environment\create.ps1"; Used=$false},
     @{Name="Create Container Apps"; Script="05-container-apps\create.ps1"; Used=$false},
     @{Name="Create App Registration (For Authentication)"; Script="06-app-registration\create.ps1"; Used=$false},
-    @{Name="Update Apps To Latest Revision"; Script="07-update-container-apps\update.ps1"; Used=$false},
+    @{Name="Maintenance"; Script=$null; Used=$false},
     @{Name="Utils"; Script=$null; Used=$false},
     @{Name="Print Current Config"; Script=$null; Used=$false},
     @{Name="Load Config"; Script=$null; Used=$false}
@@ -128,6 +128,12 @@ function Invoke-MenuOption {
             & "$PSScriptRoot\$($option.Script)" $script:customConfig
             $option.Used = $true
         }
+        elseif ($option.Name -eq "Maintenance") {
+            Show-MaintenanceMenu
+        }
+        elseif ($option.Name -eq "Utils") {
+            Show-UtilsMenu
+        }
         elseif ($option.Name -eq "Print Current Config") {
             Show-CurrentConfig
         }
@@ -146,24 +152,46 @@ function Invoke-MenuOption {
     return $true
 }
 
+function Show-MaintenanceMenu {
+    Write-Host "Maintenance submenu:"
+    Write-Host "1. Start Apps"
+    Write-Host "2. Stop Apps"
+    Write-Host "3. Update Apps To Latest Revision"
+    Write-Host "4. Back to Main Menu"
+    
+    $subSelection = Read-Host "Enter your choice"
+    switch ($subSelection) {
+        "1" { & "$PSScriptRoot\07-maintenance\start.ps1" $script:customConfig }
+        "2" { & "$PSScriptRoot\07-maintenance\stop.ps1" $script:customConfig }
+        "3" { & "$PSScriptRoot\07-maintenance\update.ps1" $script:customConfig }
+        "4" { return }
+        default { Write-Host "Invalid selection" }
+    }
+    $menuOptions[6].Used = $true
+}
+
+function Show-UtilsMenu {
+    Write-Host "Utils submenu:"
+    Write-Host "1. Fetch Last Container Tags"
+    Write-Host "2. List Files"
+    Write-Host "3. Back to Main Menu"
+    
+    $subSelection = Read-Host "Enter your choice"
+    switch ($subSelection) {
+        "1" { & "$PSScriptRoot\utils\fetch-last-container-tags.ps1" $script:customConfig }
+        "2" { & "$PSScriptRoot\utils\list_files.ps1" $script:customConfig }
+        "3" { return }
+        default { Write-Host "Invalid selection" }
+    }
+    $menuOptions[7].Used = $true
+}
+
 # Main loop
 $continue = $true
 while ($continue) {
     Show-Menu
     $selection = Read-Host "Enter your choice"
     
-    if ($selection -eq "8") {
-        Write-Host "Utils submenu:"
-        Write-Host "1. Fetch Last Container Tags"
-        Write-Host "2. List Files"
-        $subSelection = Read-Host "Enter your choice"
-        switch ($subSelection) {
-            "1" { & "$PSScriptRoot\utils\fetch-last-container-tags.ps1" $script:customConfig }
-            "2" { & "$PSScriptRoot\utils\list_files.ps1" $script:customConfig }
-            default { Write-Host "Invalid selection" }
-        }
-        $menuOptions[5].Used = $true
-    }
     if ($selection -eq "e" -or $selection -eq "E") {
         $continue = $false
     }

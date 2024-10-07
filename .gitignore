@@ -3,3 +3,4 @@ variables-*.ps1
 *.yaml
 *.log
 test.ps1
+null
