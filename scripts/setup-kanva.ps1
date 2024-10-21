@@ -98,11 +98,11 @@ function Show-Menu {
     Write-Host (" " * $menuWidth) -BackgroundColor White
     Write-Host ("")
     
-    for ($i = 0; $i -lt 7; $i++) {
+    for ($i = 0; $i -lt 6; $i++) {
         $checkMark = if ($menuOptions[$i].Used) { "[✅] " } else { "[ ]" }
         Write-Host ("{0,2}. {1} {2}" -f ($i + 1), $menuOptions[$i].Name, $checkMark)
     }
-    for ($i = 7; $i -lt $menuOptions.Count; $i++) {
+    for ($i = 6; $i -lt $menuOptions.Count; $i++) {
         Write-Host ("{0,2}. {1}" -f ($i + 1), $menuOptions[$i].Name)
     }
     Write-Host " E. Exit"
@@ -159,6 +159,7 @@ function Show-MaintenanceMenu {
     Write-Host "3. Update Apps To Latest Revision"
     Write-Host "4. Back to Main Menu"
     
+    az account set --subscription $subscriptionId
     $subSelection = Read-Host "Enter your choice"
     switch ($subSelection) {
         "1" { & "$PSScriptRoot\07-maintenance\start.ps1" $script:customConfig }
