@@ -1,0 +1,44 @@
+services:
+  hub:
+    image: kanvaimages.azurecr.io/hub
+    container_name: hub
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always # Keep running
+    volumes:
+      - ~/kanva-data:/app/data
+    env_file:
+      - pilot.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/echo"]
+      interval: 300s
+      timeout: 10s
+      retries: 3
+
+  delphi:
+    image: kanvaimages.azurecr.io/delphi
+    container_name: delphi
+    depends_on:
+      - hub
+    environment:
+      - KANVA_HUB_URL=http://localhost/hub-agent
+    restart: always
+    volumes:
+      - ~/kanva-data:/app/data
+
+  pythoness:
+    image: kanvaimages.azurecr.io/pythoness
+    container_name: pythoness
+    depends_on:
+      - hub
+    environment:
+      - KANVA_HUB_URL=http://localhost/hub-agent
+    restart: always
+    volumes:
+      - ~/kanva-data:/app/data
+
+networks:
+  default:
+    external: true
+    name: nat
