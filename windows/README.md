@@ -68,6 +68,24 @@ SecurityKey=""
 docker-compose up -d
 ```
 
+## Testing the Installation
+
+### Alternative 1
+1. Go to http://localhost/ in the browser within the VM.
+2. Go to Data -> Load New Data
+3. Select "API/URL"
+4. Enter Victoria Electricity Demand as name as URL
+5. Enter https://kanvadatasets.blob.core.windows.net/datasets/Victoria%20Electricity%20Demand.parquet 
+6. Enter "Date" as "Order By"
+7. The data should be l
+
+### Alternative 2:
+1. Download https://kanvadatasets.blob.core.windows.net/datasets/Victoria%20Electricity%20Demand.parquet 
+2. Go to Data -> Load New Data
+3. Drop the file you downloaded in "Drop file here to load data"
+
+After this, Kanva should load the data and you should see "2,16 rows, 14 columns". You should be able to open the dataset and explore the data too.
+
 ## Stopping Kanva
 Stop Kanva
 ```bash
