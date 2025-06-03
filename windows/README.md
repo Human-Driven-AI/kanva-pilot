@@ -68,6 +68,9 @@ SecurityKey=""
     ```powershell
     setx KANVA_DELPHI_REPLICAS 2
     setx KANVA_PYTHONESS_REPLICAS 2
+    # Set for current session or start a new console
+    $Env:KANVA_DELPHI_REPLICAS = "2"
+    $Env:KANVA_PYTHONESS_REPLICAS = "2"
     ```
     - Or edit docker-compose.yml
     ```
