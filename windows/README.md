@@ -63,7 +63,20 @@ Add a string for the security key:
 
 SecurityKey=""
 
-10. Start Kanva
+10. Optional: Set number of replicas
+    - Through enviromental variables:
+    ```powershell
+    setx KANVA_DELPHI_REPLICAS 2
+    setx KANVA_PYTHONESS_REPLICAS 2
+    ```
+    - Or edit docker-compose.yml
+    ```
+    replicas: ${KANVA_DELPHI_REPLICAS:-2}
+    replicas: ${KANVA_PYTHONESS_REPLICAS:-2}
+    ```
+
+
+11. Start Kanva
 ```powershell
 docker-compose up -d
 ```
