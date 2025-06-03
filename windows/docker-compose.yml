@@ -1,11 +1,22 @@
-
 services:
+  efbundle:
+    image: kanvaimages.azurecr.io/efbundle
+    container_name: efbundle
+    entrypoint: /app/efbundle-sqlite
+    volumes:
+      - ${KANVA_DATA_PATH:-C:\kanva}:/app/data
+    env_file:
+      - pilot.env
+    restart: "no"  # Don't restart after completion
+
   hub:
     image: kanvaimages.azurecr.io/hub
     container_name: hub
+    depends_on:
+      efbundle:
+        condition: service_completed_successfully  # Wait for efbundle to complete successfully
     ports:
       - "80:80"
-      - "443:443"
     restart: always # Keep running
     volumes:
       - ${KANVA_DATA_PATH:-C:\kanva}:/app/data
@@ -16,6 +27,7 @@ services:
       interval: 300s
       timeout: 10s
       retries: 3
+  
   delphi:
     image: kanvaimages.azurecr.io/delphi
     # No container_name here when using replicas
@@ -28,6 +40,7 @@ services:
       - ${KANVA_DATA_PATH:-C:\kanva}:/app/data
     deploy:
       replicas: ${KANVA_DELPHI_REPLICAS:-1}
+  
   pythoness:
     image: kanvaimages.azurecr.io/pythoness
     # No container_name here when using replicas
@@ -40,7 +53,8 @@ services:
       - ${KANVA_DATA_PATH:-C:\kanva}:/app/data
     deploy:
       replicas: ${KANVA_PYTHONESS_REPLICAS:-1}
+
 networks:
   default:
-    external: true
-    name: nat
+    name: kanva-network
+    driver: bridge  # This specifies the network driver
