@@ -3,28 +3,28 @@
 The first steps of this install procedure required rebooting the VM.
 
 1. Enable Hypervisor
-```bash
+```powershell
 bcdedit /set hypervisorlaunchtype auto
 Restart-Computer
 ```
 
 2. Install Hyper-V:
-```bash
+```powershell
 Install-WindowsFeature -Name Hyper-V -IncludeManagementTools -Restart
 ```
 
 3. Install Containers
-```bash
+```powershell
 Install-WindowsFeature -Name Containers -Restart
 ```
 
 4. Allow web traffic
-```bash
+```powershell
 New-NetFirewallRule -DisplayName "Allow HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow -Profile Any
 ```
 
 5. Download and Install Docker
-```bash
+```powershell
 # Invoke-WebRequest is super slow to donwload the file
 # Invoke-WebRequest -Uri "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" -OutFile "DockerDesktopInstaller.exe"
 # It's better to download the installer through the browser
@@ -32,12 +32,12 @@ Start-Process "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Inst
 ```
 
 6. Log into the repository. The password will be provided by Human-Driven AI:
-```bash
+```powershell
 docker login kanvaimages.azurecr.io -u KanvaPilot
 ```
 
 7. Create folder for Kanva:
-```bash
+```powershell
 cd c:\
 mkdir kanva
 cd kanva
@@ -48,7 +48,7 @@ cd kanva
     - [Docker Compose file](https://raw.githubusercontent.com/Human-Driven-AI/kanva-pilot/refs/heads/main/windows/docker-compose.yml)
     - [Enviromental variables](https://github.com/Human-Driven-AI/kanva-pilot/blob/main/windows/pilot.env)
     2. Or clone the repository:
-    ```bash
+    ```powershell
     git clone git@github.com:Human-Driven-AI/kanva-pilot.git
     ```
     3. Or download the repository as a zip file:
@@ -64,7 +64,7 @@ Add a string for the security key:
 SecurityKey=""
 
 10. Start Kanva
-```bash
+```powershell
 docker-compose up -d
 ```
 
@@ -88,7 +88,7 @@ After this, Kanva should load the data and you should see "2,16 rows, 14 columns
 
 ## Stopping Kanva
 Stop Kanva
-```bash
+```powershell
 cd c:\kanva
 docker-compose down
 ```
@@ -96,7 +96,7 @@ docker-compose down
 ## Updating Kanva
 Use the [update-kanva.bat](https://raw.githubusercontent.com/Human-Driven-AI/kanva-pilot/refs/heads/main/windows/update-kanva.bat) script (also available within the windows folder in the repo) or run these commands:
 
-```bash
+```powershell
 # Stop the app
 docker-compose down
 # Pull containers
