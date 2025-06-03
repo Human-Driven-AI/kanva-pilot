@@ -13,17 +13,17 @@ Restart-Computer
 Install-WindowsFeature -Name Hyper-V -IncludeManagementTools -Restart
 ```
 
-2. Install Containers
+3. Install Containers
 ```bash
 Install-WindowsFeature -Name Containers -Restart
 ```
 
-3. Allow web traffic
+4. Allow web traffic
 ```bash
 New-NetFirewallRule -DisplayName "Allow HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow -Profile Any
 ```
 
-4. Download and Install Docker
+5. Download and Install Docker
 ```bash
 # Invoke-WebRequest is super slow to donwload the file
 # Invoke-WebRequest -Uri "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe" -OutFile "DockerDesktopInstaller.exe"
@@ -31,18 +31,18 @@ New-NetFirewallRule -DisplayName "Allow HTTP" -Direction Inbound -Protocol TCP -
 Start-Process "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe"
 ```
 
-5. Log into the repository. The password will be provided by Human-Driven AI:
+6. Log into the repository. The password will be provided by Human-Driven AI:
 ```bash
 docker login kanvaimages.azurecr.io -u KanvaPilot
 ```
 
-6. Create folder for Kanva:
+7. Create folder for Kanva:
 ```bash
 cd c:\
 mkdir kanva
 cd kanva
 ```
-7. Get configuration files.
+8. Get configuration files.
 
     1. Either download these individually:
     - [Docker Compose file](https://raw.githubusercontent.com/Human-Driven-AI/kanva-pilot/refs/heads/main/windows/docker-compose.yml)
@@ -57,13 +57,13 @@ cd kanva
 
 Whatever method is used, docker-compose.yml and pilot.env should be placed in C:\kanva.
 
-8. Edit pilot.env
+9. Edit pilot.env
 
 Add a string for the security key:
 
 SecurityKey=""
 
-9. Start Kanva
+10. Start Kanva
 ```bash
 docker-compose up -d
 ```
