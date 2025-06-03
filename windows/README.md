@@ -57,12 +57,19 @@ cd kanva
 
 Whatever method is used, docker-compose.yml and pilot.env should be placed in C:\kanva.
 
-8. Start Kanva
+8. Edit pilot.env
+
+Add a string for the security key:
+
+SecurityKey=""
+
+9. Start Kanva
 ```bash
 docker-compose up -d
 ```
 
-9. Stop Kanva
+## Stopping Kanva
+Stop Kanva
 ```bash
 docker-compose down
 ```
