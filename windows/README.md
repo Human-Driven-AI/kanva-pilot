@@ -76,7 +76,8 @@ docker-compose down
 ```
 
 ## Updating Kanva
-Stop Kanva
+Use the [update-kanva.bat](https://raw.githubusercontent.com/Human-Driven-AI/kanva-pilot/refs/heads/main/windows/update-kanva.bat) script (also available within the windows folder in the repo) or run these commands:
+
 ```bash
 # Stop the app
 docker-compose down
