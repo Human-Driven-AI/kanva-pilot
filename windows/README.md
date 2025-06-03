@@ -71,5 +71,20 @@ docker-compose up -d
 ## Stopping Kanva
 Stop Kanva
 ```bash
+cd c:\kanva
 docker-compose down
+```
+
+## Updating Kanva
+Stop Kanva
+```bash
+# Stop the app
+docker-compose down
+# Pull containers
+docker pull kanvaimages.azurecr.io/efbundle:latest
+docker pull kanvaimages.azurecr.io/hub:latest
+docker pull kanvaimages.azurecr.io/delphi:latest
+docker pull kanvaimages.azurecr.io/pythoness:latest
+# Start Kanva again
+docker-compose up -d
 ```
