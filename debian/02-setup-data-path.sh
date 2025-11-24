@@ -6,29 +6,25 @@ if [ ! -f pilot.env ]; then
     exit 1
 fi
 
-# Copy pilot.env to .env (this will be the working copy)
-cp pilot.env .env
-
-# Extract RootDataPath value (handling both quoted and unquoted values)
-ROOT_DATA_PATH=$(grep "^RootDataPath=" .env | cut -d'=' -f2 | tr -d '"')
+# Extract HostDataPath value (handling both quoted and unquoted values)
+HOST_DATA_PATH=$(grep "^HostDataPath=" pilot.env | cut -d'=' -f2 | tr -d '"')
 
 # Expand ~ to absolute path
-ROOT_DATA_PATH="${ROOT_DATA_PATH/#\~/$HOME}"
+HOST_DATA_PATH="${HOST_DATA_PATH/#\~/$HOME}"
 
-# Update .env to replace ~/kanva-data with the absolute RootDataPath
-sed -i "s|~/kanva-data|${ROOT_DATA_PATH}|g" .env
+# Create .env file with the absolute host path for docker-compose
+echo "HostDataPath=${HOST_DATA_PATH}" > .env
 
 # Create the data directory if it doesn't exist
-mkdir -p "$ROOT_DATA_PATH"
+mkdir -p "$HOST_DATA_PATH"
 
 # Fix ownership if directory is owned by root
-if [ -d "$ROOT_DATA_PATH" ] && [ "$(stat -c '%U' "$ROOT_DATA_PATH" 2>/dev/null || stat -f '%Su' "$ROOT_DATA_PATH" 2>/dev/null)" = "root" ]; then
+if [ -d "$HOST_DATA_PATH" ] && [ "$(stat -c '%U' "$HOST_DATA_PATH" 2>/dev/null || stat -f '%Su' "$HOST_DATA_PATH" 2>/dev/null)" = "root" ]; then
     echo "Directory is owned by root, fixing ownership..."
-    sudo chown -R $USER:$USER "$ROOT_DATA_PATH"
+    sudo chown -R $USER:$USER "$HOST_DATA_PATH"
 fi
 
-echo "Created .env from pilot.env"
-echo "Created data directory: $ROOT_DATA_PATH"
-echo "Updated .env with absolute path: $ROOT_DATA_PATH"
+echo "Created .env for docker-compose"
+echo "Created data directory: $HOST_DATA_PATH"
 echo ""
 echo "Setup complete!"
