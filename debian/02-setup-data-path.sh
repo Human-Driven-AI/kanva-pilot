@@ -21,6 +21,12 @@ sed -i "s|~/kanva-data|${ROOT_DATA_PATH}|g" .env
 # Create the data directory if it doesn't exist
 mkdir -p "$ROOT_DATA_PATH"
 
+# Fix ownership if directory is owned by root
+if [ -d "$ROOT_DATA_PATH" ] && [ "$(stat -c '%U' "$ROOT_DATA_PATH" 2>/dev/null || stat -f '%Su' "$ROOT_DATA_PATH" 2>/dev/null)" = "root" ]; then
+    echo "Directory is owned by root, fixing ownership..."
+    sudo chown -R $USER:$USER "$ROOT_DATA_PATH"
+fi
+
 echo "Created .env from pilot.env"
 echo "Created data directory: $ROOT_DATA_PATH"
 echo "Updated .env with absolute path: $ROOT_DATA_PATH"
