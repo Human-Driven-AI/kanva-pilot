@@ -14,7 +14,30 @@ sudo usermod -aG docker $USER
 # Verify installation
 docker --version
 
-echo "Docker installed successfully. You may need to log out and back in for group changes to take effect."
 echo ""
-echo "Now logging into Azure Container Registry..."
-docker login kanvaimages.azurecr.io -u KanvaPilot
+echo "Docker installed successfully!"
+echo ""
+echo "IMPORTANT: You need to refresh your user groups for docker to work without sudo."
+echo "Choose one of the following options:"
+echo ""
+echo "  1. Run 'newgrp docker' now (affects current terminal only)"
+echo "  2. Log out and log back in (recommended for permanent effect)"
+echo ""
+echo "After refreshing groups, proceed to the next step:"
+echo "  ./02-login-registry.sh"
+echo ""
+
+# Optionally activate the docker group in the current shell
+read -p "Do you want to run 'newgrp docker' now? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "Starting new shell with docker group activated..."
+    echo "You can now proceed with: ./02-login-registry.sh"
+    echo "Type 'exit' to return to your previous shell when done."
+    echo ""
+    exec newgrp docker
+else
+    echo ""
+    echo "Skipped. Remember to either run 'newgrp docker' or log out and back in before continuing."
+fi
