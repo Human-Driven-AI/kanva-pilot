@@ -6,7 +6,7 @@ services:
     volumes:
       - ${RootDataPath}:/app/data
     env_file:
-      - pilot.env
+      - .env
     restart: "no"  # Don't restart after completion
 
   hub:
@@ -21,7 +21,7 @@ services:
     volumes:
       - ${RootDataPath}:/app/data
     env_file:
-      - pilot.env
+      - .env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/echo"]
       interval: 300s
