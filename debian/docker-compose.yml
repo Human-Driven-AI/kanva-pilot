@@ -4,7 +4,7 @@ services:
     container_name: efbundle
     entrypoint: /app/efbundle-sqlite
     volumes:
-      - ${KANVA_DATA_PATH:-~/kanva-data}:/app/data
+      - ${RootDataPath}:/app/data
     env_file:
       - pilot.env
     restart: "no"  # Don't restart after completion
@@ -19,7 +19,7 @@ services:
       - "80:80"
     restart: always # Keep running
     volumes:
-      - ${KANVA_DATA_PATH:-~/kanva-data}:/app/data
+      - ${RootDataPath}:/app/data
     env_file:
       - pilot.env
     healthcheck:
@@ -37,7 +37,7 @@ services:
       - KANVA_HUB_URL=http://hub/hub-agent
     restart: always
     volumes:
-      - ${KANVA_DATA_PATH:-~/kanva-data}:/app/data
+      - ${RootDataPath}:/app/data
     deploy:
       replicas: ${KANVA_DELPHI_REPLICAS:-1}
 
@@ -50,7 +50,7 @@ services:
       - KANVA_HUB_URL=http://hub/hub-agent
     restart: always
     volumes:
-      - ${KANVA_DATA_PATH:-~/kanva-data}:/app/data
+      - ${RootDataPath}:/app/data
     deploy:
       replicas: ${KANVA_PYTHONESS_REPLICAS:-1}
 
