@@ -168,11 +168,18 @@ docker compose restart
 
 ### Permission Issues
 
-If you encounter permission errors, ensure the data directory has correct ownership:
+If you encounter permission errors (e.g., "Permission denied" when writing to `/app/data`):
 
 ```bash
-sudo chown -R $USER:$USER ~/kanva-data
+docker compose down
+rm -rf ~/kanva-data
+./03-setup-data-path.sh
+docker compose up -d
 ```
+
+This stops containers, removes the data directory, recreates it with correct permissions (777), and restarts.
+
+**Note:** The data directory needs 777 permissions because containers run as a different user (UID 5678) than the host user. Removing the directory will delete all data including the database, so only do this if you're starting fresh or have backups.
 
 ### Port Conflicts
 
