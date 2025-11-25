@@ -24,6 +24,9 @@ if [ -d "$HOST_DATA_PATH" ] && [ "$(stat -c '%U' "$HOST_DATA_PATH" 2>/dev/null |
     sudo chown -R $USER:$USER "$HOST_DATA_PATH"
 fi
 
+# Set permissions to allow containers to write (777 needed because containers run as appuser)
+chmod -R 777 "$HOST_DATA_PATH"
+
 echo "Created .env for docker-compose"
 echo "Created data directory: $HOST_DATA_PATH"
 echo ""
