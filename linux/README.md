@@ -26,7 +26,7 @@ Then clone the repository:
 
 ```bash
 git clone https://github.com/Human-Driven-AI/kanva-pilot.git
-cd kanva-pilot/debian
+cd kanva-pilot/linux
 ```
 
 #### Option B: Using curl
@@ -35,7 +35,7 @@ If you don't want to install git or prefer a quick download:
 
 ```bash
 curl -L https://github.com/Human-Driven-AI/kanva-pilot/archive/refs/heads/main.tar.gz | tar -xz
-cd kanva-pilot-main/debian
+cd kanva-pilot-main/linux
 ```
 
 ### 2. Install Docker
