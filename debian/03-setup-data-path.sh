@@ -14,10 +14,12 @@ HOST_DATA_PATH="${HOST_DATA_PATH/#\~/$HOME}"
 
 # Create .env file with the absolute host path for docker-compose
 echo "HostDataPath=${HOST_DATA_PATH}" > .env
+echo "Created .env for docker-compose"
 
 # Create the data directory if it doesn't exist
 mkdir -p "$HOST_DATA_PATH"
 mkdir -p "$HOST_DATA_PATH/local-cache"
+echo "Created data directory: $HOST_DATA_PATH"
 
 # Fix ownership if directory is owned by root
 if [ -d "$HOST_DATA_PATH" ] && [ "$(stat -c '%U' "$HOST_DATA_PATH" 2>/dev/null || stat -f '%Su' "$HOST_DATA_PATH" 2>/dev/null)" = "root" ]; then
@@ -28,7 +30,5 @@ fi
 # Set permissions to allow containers to write (777 needed because containers run as appuser)
 chmod -R 777 "$HOST_DATA_PATH"
 
-echo "Created .env for docker-compose"
-echo "Created data directory: $HOST_DATA_PATH"
 echo ""
 echo "Setup complete!"
