@@ -17,6 +17,7 @@ echo "HostDataPath=${HOST_DATA_PATH}" > .env
 
 # Create the data directory if it doesn't exist
 mkdir -p "$HOST_DATA_PATH"
+mkdir -p "$HOST_DATA_PATH/local-cache"
 
 # Fix ownership if directory is owned by root
 if [ -d "$HOST_DATA_PATH" ] && [ "$(stat -c '%U' "$HOST_DATA_PATH" 2>/dev/null || stat -f '%Su' "$HOST_DATA_PATH" 2>/dev/null)" = "root" ]; then
