@@ -21,14 +21,15 @@ mkdir -p "$HOST_DATA_PATH"
 mkdir -p "$HOST_DATA_PATH/local-cache"
 echo "Created data directory: $HOST_DATA_PATH"
 
-# Set ownership to current user and docker group
-echo "Setting ownership to $USER:docker..."
-sudo chown -R $USER:docker "$HOST_DATA_PATH"
+# Set ownership to current user
+echo "Setting ownership and permissions..."
+sudo chown -R $USER:$USER "$HOST_DATA_PATH"
 
-# Set permissions: owner and group can read/write/execute
-chmod -R 775 "$HOST_DATA_PATH"
+# Set permissions to allow any user to read/write/execute
+# This is needed because containers run as a different UID (appuser)
+chmod -R 777 "$HOST_DATA_PATH"
 
-echo "Permissions set (775 with docker group ownership)"
+echo "Permissions set (777 - allows container users to write)"
 
 echo ""
 echo "Setup complete!"
