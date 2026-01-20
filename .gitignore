@@ -1,8 +1,10 @@
-variables.ps1
-variables-*.ps1
-*.yaml
-*.log
-test.ps1
-null
+# OS files
 .DS_Store
+
+# Editor/tool files
 .aider*
+null
+
+# Generated files
+*.log
+*.yaml
