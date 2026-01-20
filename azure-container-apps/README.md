@@ -4,8 +4,8 @@ Scripts to deploy Kanva to Azure Container Apps using the reference architecture
 
 ## Options
 
-- **[windows/](windows/)** - PowerShell scripts (requires PowerShell and Azure CLI)
-- **[linux/](linux/)** - Bash scripts (requires Bash and Azure CLI)
+- **[powershell/](powershell/)** - PowerShell scripts (requires PowerShell and Azure CLI)
+- **[bash/](bash/)** - Bash scripts (requires Bash and Azure CLI)
 
 ## Flexibility
 

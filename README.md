@@ -20,7 +20,7 @@ Docker Compose deployment for Windows VMs (Windows Server, Azure VMs).
 
 ### [azure-container-apps/](azure-container-apps/)
 Azure Container Apps deployment using the reference architecture.
-- PowerShell scripts (`windows/`) or Bash scripts (`linux/`)
+- PowerShell scripts (`powershell/`) or Bash scripts (`bash/`)
 - Interactive setup with modular steps - use existing resources or create new ones
 - Suitable for production Azure deployments
 
